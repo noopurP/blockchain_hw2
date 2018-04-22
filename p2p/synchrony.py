@@ -24,10 +24,7 @@ def get_curr_round():
     """
     global start_time, round_length
 
-    # Amount of time (in seconds) since we have started
-    time_elapsed = time.time()-start_time
-
-    return int(time_elapsed//round_length) if is_started() else None
+    return int((time.time()-start_time)//round_length) if is_started() else None
 
 def should_send():
     """ Determine whether a node should be sending messages when queried.
@@ -50,7 +47,7 @@ def should_send():
     now = time.time()
     after_first_wait = now > round_start_time+synchrony_assumption
     before_second_wait = now < round_start_time+synchrony_assumption*2
-
+    
     return after_first_wait and before_second_wait
 
 def receive_start_message():
