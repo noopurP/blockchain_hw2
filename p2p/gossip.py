@@ -29,7 +29,10 @@ def gossip_message(type, message):
     """
     # (you should use send_message as a primitive; also see the config file)
 
-    # (placeholder for 1)
+    for key,val in config.PEERS.items():
+        if key is not config.node_id:
+            send_message(val, type, message)
+    return
 
 def handle_message(type, message, sender):
     """ Used to handle an incoming message sent by another node (heh-heh-heyyyy!).
@@ -78,4 +81,3 @@ def handle_message(type, message, sender):
     if type == "ba-vote":
         # Send confirmed vote to our BA protocol
         config.ba.process_vote(message)
-
