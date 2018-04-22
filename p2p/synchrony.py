@@ -23,10 +23,8 @@ def get_curr_round():
             int: The integer value of the current round.
     """
     global start_time, round_length
-    # Do not round intermediate arithmetic
 
-    # placeholder for (2.2)
-    return 0
+    return int((time.time()-start_time)//round_length) if is_started() else None
 
 def should_send():
     """ Determine whether a node should be sending messages when queried.
@@ -46,6 +44,9 @@ def receive_start_message():
         logging to stdout (see log_synchrony).
     """
     global start_time
+
+    start_time = time.time()
+    log_synchrony()
 
     # placeholder for (2.1)
 
