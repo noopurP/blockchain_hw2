@@ -36,8 +36,13 @@ def should_send():
     # WARNING: this needs to be audited for security before production use!
     # specifically w.r.t. timing assumptions at the boundaries of the synchrony assumption
 
-    # placeholder for (2.3)
-    return False
+    if not is_started():
+        return None
+
+    round_start_time = start_time + get_curr_round() * round_length
+    now = time.time()
+
+    return now > round_start_time+synchrony_assumption and now < round_start_time+synchrony_assumption*2
 
 def receive_start_message():
     """ Called on receipt of a start message; starts tracking rounds and initializes
