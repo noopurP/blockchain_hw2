@@ -24,7 +24,10 @@ def get_curr_round():
     """
     global start_time, round_length
 
-    return int((time.time()-start_time)//round_length) if is_started() else None
+    # Amount of time (in seconds) since we have started
+    time_elapsed = time.time()-start_time
+
+    return int(time_elapsed//round_length) if is_started() else None
 
 def should_send():
     """ Determine whether a node should be sending messages when queried.
@@ -36,13 +39,19 @@ def should_send():
     # WARNING: this needs to be audited for security before production use!
     # specifically w.r.t. timing assumptions at the boundaries of the synchrony assumption
 
+    # Cancel if we haven't started yet
     if not is_started():
         return None
 
+    # The time at which the current round started
     round_start_time = start_time + get_curr_round() * round_length
-    now = time.time()
 
-    return now > round_start_time+synchrony_assumption and now < round_start_time+synchrony_assumption*2
+    # Are we after the first wait period and before the second wait period?
+    now = time.time()
+    after_first_wait = now > round_start_time+synchrony_assumption
+    before_second_wait = now < round_start_time+synchrony_assumption*2
+
+    return after_first_wait and before_second_wait
 
 def receive_start_message():
     """ Called on receipt of a start message; starts tracking rounds and initializes
@@ -52,8 +61,6 @@ def receive_start_message():
 
     start_time = time.time()
     log_synchrony()
-
-    # placeholder for (2.1)
 
 @run_async
 def log_synchrony():
