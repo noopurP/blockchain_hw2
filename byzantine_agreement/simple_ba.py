@@ -52,12 +52,19 @@ class SimplePKIBA:
                 list of str: Returns a list of proposals to broadcast votes for.
         """
         # Get all proposals with r votes, including sender
+        # proposal is new proposal that has just achieved threshold (m not in Sj)
+        # Pseudocode: then j adds m to its set Sj, signs m using its secret key skj, and multicasts...
 
-        # placeholder for (3.1)
-                # proposal is new proposal that has just achieved threshold (m not in Sj)
-                # Pseudocode: then j adds m to its set Sj, signs m using its secret key skj, and multicasts...
+        broadcast_votes_for = []
+        for m in self.get_proposals_with_threshold(round):
+            if m not in self.s_i:
+                self.s_i.append(m)
+                self.votes[m].add(config.node_id)
+                proposal_sig = util.sign_message(m, config.SECRET_KEYS[config.node_id])
+                self.signatures[m].append((config.node_id, proposal_sig))
+                broadcast_votes_for.append(m)
 
-        return []
+        return broadcast_votes_for
 
     def get_proposals_with_threshold(self, round):
         """ Gets proposals that have reached the threshold required by a given round.
@@ -74,7 +81,7 @@ class SimplePKIBA:
         # Pseudocode: with signatures from r different players, including player s
         eligible_proposals = []
         for m,sigs in self.votes.items():
-            if len(sigs)>0 and len(sigs)>=round and 1 in sigs:
+            if len(sigs)>0 and len(sigs)>=round and 1 in sigs: # Assuming node 1 is the sender
                 eligible_proposals.append(m)
         return (eligible_proposals)
 
