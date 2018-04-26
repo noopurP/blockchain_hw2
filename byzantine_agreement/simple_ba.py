@@ -72,9 +72,11 @@ class SimplePKIBA:
             This function *DOES NOT* need to check signatures; assume they are already checked in process_vote.
         """
         # Pseudocode: with signatures from r different players, including player s
-
-        # placeholder for (3.2)
-        return []
+        eligible_proposals = []
+        for m,sigs in self.votes.items():
+            if len(sigs)>0 and len(sigs)>=round and 1 in sigs:
+                eligible_proposals.append(m)
+        return (eligible_proposals)
 
     def broadcast_votes_for(self, round, votes):
         """ Broadcast votes on a proposal to all nodes; this happens once a proposal is added to s_i. """
