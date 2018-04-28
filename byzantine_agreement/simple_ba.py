@@ -126,7 +126,13 @@ class SimplePKIBA:
     def get_output(self):
         """ Returns the final output of agreement once the protocol has completed, and None before then. """
         # Pseudocode: (Output) Each player i outputs 0 if |Si| > 1 and otherwise outputs the unique element in Si.
-
+        if self.is_done():
+            if len(self.s_i)==1:
+                return self.s_i[0]
+            else:
+                return 0
+        else:
+            return None
         # placeholder for (3.3)
         return []
 
